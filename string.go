@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"reflect"
 	"strings"
 	"unicode"
 	"unicode/utf8"
@@ -13,21 +14,6 @@ const EmptySpace = " "
 // EmptyString
 const EmptyString = ""
 
-/**
-* Tokenize the given {@code String} into a {@code String} array via a
-* {@link StringTokenizer}.
-* <p>The given {@code delimiters} string can consist of any number of delimiter characters.
-* Each of those characters can be used to separate tokens.
-* A delimiter is always a single character; for multi-character (each of the characters is individually considered as a delimiter)
-* @param trimTokens trim the tokens via {@link String#trim()}
-* @param ignoreEmptyTokens omit empty tokens from the result array  (only applies to tokens that are empty after trimming; StringTokenizer
-* will not consider subsequent delimiters as token in the first place).
-* @return an array of the tokens ({@code null} if the input {@code String}
-* was {@code null})
-* @see java.util.StringTokenizer
-* @see String#trim()
-* @see #delimitedListToStringArray
- */
 // 根据分隔符进行分割处理,形成包路径数组.默认分割符为:",; \t\n"
 func TokenizeToStringArray(str, delimiters string, trimTokens, ignoreEmptyTokens bool) []*string {
 	if str == EmptyString {
@@ -51,14 +37,14 @@ func TokenizeToStringArray1(str, delimiters string) []*string {
 	return TokenizeToStringArray(str, delimiters, true, true)
 }
 
-// Str2Bytes
+// Str2Bytes 字符串转[]byte
 func Str2Bytes(s string) []byte {
-	x := (*[2]uintptr)(unsafe.Pointer(&s))
-	h := [3]uintptr{x[0], x[1], x[1]}
-	return *(*[]byte)(unsafe.Pointer(&h))
+	x := *(*reflect.StringHeader)(unsafe.Pointer(&s))
+	h := *(*[]byte)(unsafe.Pointer(&x))
+	return h
 }
 
-// Bytes2Str
+// Bytes2Str []byte转字符串
 func Bytes2Str(b []byte) string {
 	return *(*string)(unsafe.Pointer(&b))
 }
@@ -108,12 +94,20 @@ func HasText(source string) bool {
 	return !IsBlank(source)
 }
 
-// 将字符串追加到数组中,且没有重复。
-func AppendStr(strs []string, str string) []string {
+// AppendUniqueStr 将字符串追加到数组中,且去重
+func AppendUniqueStr(strs []string, str string) []string {
 	for _, s := range strs {
 		if s == str {
 			return strs
 		}
 	}
 	return append(strs, str)
+}
+
+// Reverse 字符翻转
+func Reverse(s []rune) []rune {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
+	return s
 }
