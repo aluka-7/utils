@@ -37,10 +37,10 @@ func TokenizeToStringArray1(str, delimiters string) []*string {
 	return TokenizeToStringArray(str, delimiters, true, true)
 }
 
-// Str2Bytes 字符串转[]byte
+// Str2Bytes 字符串转 []byte
 func Str2Bytes(s string) []byte {
-	x := *(*reflect.StringHeader)(unsafe.Pointer(&s))
-	h := *(*[]byte)(unsafe.Pointer(&x))
+	x := *(*reflect.StringHeader)(unsafe.Pointer(&s)) // 获取到 string 变量的基础结构
+	h := *(*[]byte)(unsafe.Pointer(&x))               // 将基础结构以 []byte 输出
 	return h
 }
 
