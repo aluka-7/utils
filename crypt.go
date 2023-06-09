@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"crypto/aes"
 	"crypto/cipher"
 	"crypto/des"
 	"crypto/hmac"
@@ -11,6 +12,51 @@ import (
 	"encoding/hex"
 	"hash"
 )
+
+// pkcs7Padding 填充
+func pkcs7Padding(data []byte, blockSize int) []byte {
+	padding := blockSize - len(data)%blockSize
+	padText := bytes.Repeat([]byte{byte(padding)}, padding)
+	return append(data, padText...)
+}
+
+// pkcs7UnPadding 填充的反向操作
+func pkcs7UnPadding(data []byte) ([]byte, error) {
+	length := len(data)
+	unPadding := int(data[length-1])
+	return data[:(length - unPadding)], nil
+}
+
+// AesEncrypt 加密
+func AesEncrypt(data []byte, key []byte) ([]byte, error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	blockSize := block.BlockSize()
+	encryptBytes := pkcs7Padding(data, blockSize)
+	crypted := make([]byte, len(encryptBytes))
+	blockMode := cipher.NewCBCEncrypter(block, key[:blockSize])
+	blockMode.CryptBlocks(crypted, encryptBytes)
+	return crypted, nil
+}
+
+// AesDecrypt 解密
+func AesDecrypt(data []byte, key []byte) ([]byte, error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	blockSize := block.BlockSize()
+	blockMode := cipher.NewCBCDecrypter(block, key[:blockSize])
+	crypted := make([]byte, len(data))
+	blockMode.CryptBlocks(crypted, data)
+	crypted, err = pkcs7UnPadding(crypted)
+	if err != nil {
+		return nil, err
+	}
+	return crypted, nil
+}
 
 // 给指定的字符串进行MD5加密
 func MD5(origData string) string {
