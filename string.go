@@ -110,3 +110,11 @@ func Reverse(s []rune) []rune {
 	}
 	return s
 }
+
+func Concat(str ...string) string {
+	var builder strings.Builder
+	for _, s := range str {
+		builder.WriteString(s)
+	}
+	return builder.String()
+}

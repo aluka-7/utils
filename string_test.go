@@ -25,7 +25,6 @@ func TestIsBlank(t *testing.T) {
 	t.Log(IsBlank("t "))
 	t.Log(IsBlank("t t"))
 	t.Log(IsBlank("tt"))
-
 }
 
 func init() {
@@ -43,9 +42,6 @@ func TestSyncMap(t *testing.T) {
 	t.Log(timeSpan)
 }
 
-func BenchmarkAppendStr(b *testing.B) {
-	s := []string{"a"}
-	for i := 0; i < b.N; i++ {
-		s = AppendStr(s, fmt.Sprint(b.N%3))
-	}
+func TestConcat(t *testing.T) {
+	t.Log(Concat("t", "e", "s", "t"))
 }

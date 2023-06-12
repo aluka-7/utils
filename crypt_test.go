@@ -3,7 +3,7 @@ package utils
 import "testing"
 
 func Test_EncryptedPassword(t *testing.T) {
-	expected := "b8c9780d6775dae3080de04f28730c40fafc4cea8a33f9e4d5027f5696babc313929925d6def2379c068ec5cf7e497840bac"
+	expected := "d31016aa4230cc95bf653b5266ca1dff5a35ebce09a1dd659c704fcb162ef0432137a8ed0d225e8bf67c49fbba93b6e34a6c"
 	salt := "4322f9a718b6b117c842bf6d52ca4eda"
 	actual := EncryptedPassword("12345678", salt)
 
